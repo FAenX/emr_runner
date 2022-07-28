@@ -43,17 +43,6 @@ ln -sf /dev/stdout $SPARK_WORKER_LOG
 
 RUN apt update && pip3 install --upgrade pip 
 
-RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" |  tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-    &&  apt update \
-    &&  apt install gh -y 
-
-RUN echo $GH_TOKEN | gh auth login --with-token
-
-RUN gh auth setup-git
-
-RUN apt install git-all -y
-
 # patch aws modules, hadoop & aws jar
 RUN set -ex \
     && pip3 install findspark \
@@ -61,16 +50,6 @@ RUN set -ex \
     # patch aw hadoop and aws java if not found
 RUN if [ ! -e ${SPARK_HOME}/jars/hadoop-aws-3.2.0.jar ]; then curl -sSL  https://search.maven.org/remotecontent?filepath=org/apache/hadoop/hadoop-aws/3.2.0/hadoop-aws-3.2.0.jar  > ${SPARK_HOME}/jars/hadoop-aws-3.2.0.jar; fi
 RUN if [ ! -e ${SPARK_HOME}/jars/aws-java-sdk-bundle-1.11.375.jar ]; then curl -sSL https://search.maven.org/remotecontent?filepath=com/amazonaws/aws-java-sdk-bundle/1.11.375/aws-java-sdk-bundle-1.11.375.jar  > ${SPARK_HOME}/jars/aws-java-sdk-bundle-1.11.375.jar; fi
-
-
-COPY pyproject.toml .
-COPY poetry.lock .
-
-RUN pip install poetry --cache-dir=.pip \
-    && poetry export -f requirements.txt  -o requirements.txt --without-hashes \
-    && pip install -r requirements.txt --cache-dir=.pip --ignore-installed \
-    && rm requirements.txt;
-    
 
 
 COPY start-spark.sh /
