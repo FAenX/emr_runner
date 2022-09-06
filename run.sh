@@ -4,7 +4,7 @@
 # UPDATE THE ARGUMENTS AS REQUIRED
 source .env.sh 
 
-spark-submit src/spark_app.py --config '{
+spark-submit src/test_spark_app.py --config '{
     "pipeline_config": {
         "run": "execute_dqb", 
         "pipeline_id": "pipeline_z", 
@@ -14,7 +14,8 @@ spark-submit src/spark_app.py --config '{
             "delimiter": ",", 
             "location": "s3a://cfa-dqb-dev/payload_staging/cfa_transfer_details_20220517.csv", 
             "header": true, 
-            "multiple": true
+            "multiple": true,
+            "partition_column": "location_num"
             }, 
         "schema": [
       {

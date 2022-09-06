@@ -54,4 +54,8 @@ RUN if [ ! -e ${SPARK_HOME}/jars/aws-java-sdk-bundle-1.11.375.jar ]; then curl -
 
 COPY start-spark.sh /
 
+RUN useradd -ms /bin/bash spark
+USER spark
+WORKDIR /home/spark
+
 CMD ["/bin/bash", "/start-spark.sh"]

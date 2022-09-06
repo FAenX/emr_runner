@@ -27,4 +27,4 @@ if __name__ == '__main__':
     a = schema.get_schema()    
 
     print(a)
-    # main()
+    main()
